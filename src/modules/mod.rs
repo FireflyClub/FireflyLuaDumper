@@ -6,10 +6,14 @@ use crate::interceptor::Interceptor;
 
 mod disable_censorship;
 mod http;
+// mod il2cpp;
+mod il2cpp_api_bridge;
 mod xlua;
 
 pub use disable_censorship::DisableCensorship;
 pub use http::Http;
+// pub use il2cpp::Il2Cpp;
+pub use il2cpp_api_bridge::Il2CppApiBridge;
 pub use xlua::XLuaU;
 
 #[derive(Default)]
@@ -41,6 +45,8 @@ pub enum ModuleType {
     Http,
     DisableCensorship,
     XLua,
+    // Il2Cpp,
+    Il2CppApiBridge,
 }
 
 pub trait MhyModule {

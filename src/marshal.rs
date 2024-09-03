@@ -12,5 +12,5 @@ pub unsafe fn ptr_to_string_ansi(content: &CStr) -> *const u8 {
 }
 
 unsafe fn base() -> usize {
-    util::try_get_base_address("GameAssembly.dll").unwrap()
+    util::try_get_base_address("GameAssembly.dll").unwrap().0
 }

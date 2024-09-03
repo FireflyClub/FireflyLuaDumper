@@ -6,6 +6,7 @@
     "enable_redirect": true,
     "redirect_url": "http://127.0.0.1:21000",
     "disable_censorship": true,
+    "hook_il2cpp": false,
     "dll_sideloads": [],
     "offsets": {
         "CNBETAWin2.4.51": {
@@ -46,7 +47,8 @@
             "set_elevation_dither_alpha_value": "0x9B79F30",
             "set_distance_dither_alpha_value": "0x9B7A1F0",
             "set_dither_alpha_value": "0x9B71560",
-            "set_dither_alpha_value_with_animation": "0x9B70480"
+            "set_dither_alpha_value_with_animation": "0x9B70480",
+            "mhy_sdk_sdkutil_rsaencrypt": "0x8A6B7F0"
         }
     }
 }

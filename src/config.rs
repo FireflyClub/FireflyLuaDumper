@@ -23,6 +23,7 @@ pub struct Config {
     pub offsets: HashMap<String, OffsetConfig>,
     #[serde(default)]
     pub dll_sideloads: Vec<String>,
+    pub hook_il2cpp: bool,
 }
 
 #[derive(Deserialize, Default, Debug)]
@@ -39,6 +40,9 @@ pub struct OffsetConfig {
     pub set_dither_alpha_value: usize,
     #[serde(deserialize_with = "hex_to_usize")]
     pub set_dither_alpha_value_with_animation: usize,
+    #[serde(deserialize_with = "hex_to_usize")]
+    #[serde(default)]
+    pub mhy_sdk_sdkutil_rsaencrypt: usize,
 }
 
 impl Config {

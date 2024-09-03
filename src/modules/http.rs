@@ -1,7 +1,7 @@
 use std::ffi::CString;
 
 use super::{MhyContext, MhyModule, ModuleType};
-use crate::{marshal, GLOBAL_CONFIG};
+use crate::{marshal, util::read_csharp_string, GLOBAL_CONFIG};
 use anyhow::Result;
 use ilhook::x64::Registers;
 
@@ -29,11 +29,7 @@ impl MhyModule for MhyContext<Http> {
 }
 
 unsafe extern "win64" fn on_webrequtils_make_initial_url(reg: *mut Registers, _: usize) {
-    let str_length = *((*reg).rcx.wrapping_add(16) as *const u32);
-    let str_ptr = (*reg).rcx.wrapping_add(20) as *const u8;
-
-    let slice = std::slice::from_raw_parts(str_ptr, (str_length * 2) as usize);
-    let url = String::from_utf16le(slice).unwrap();
+    let url = read_csharp_string((*reg).rcx);
 
     let mut new_url = String::from(&GLOBAL_CONFIG.redirect_url);
     url.split('/').skip(3).for_each(|s| {

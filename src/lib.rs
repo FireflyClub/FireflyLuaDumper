@@ -1,10 +1,12 @@
-#![feature(str_from_utf16_endian)]
+#![feature(str_from_utf16_endian, let_chains)]
 
 use config::Config;
 use dll_sideload::load_dlls;
 use lazy_static::lazy_static;
-use modules::{DisableCensorship, Http, ModuleManager, XLuaU};
+use modules::{DisableCensorship, Http, Il2CppApiBridge, ModuleManager, XLuaU};
 use std::{sync::RwLock, thread, time::Duration};
+use unity::api::init_il2cpp_api_wrapper;
+use unity::rva_dumper::dump_offset_and_rva;
 
 use util::try_get_base_address;
 use win_dbg_logger::output_debug_string;
@@ -19,6 +21,7 @@ mod dll_sideload;
 mod interceptor;
 mod marshal;
 mod modules;
+mod unity;
 mod util;
 mod xluau;
 
@@ -51,25 +54,31 @@ unsafe fn thread_func() {
     Console::AllocConsole().unwrap();
 
     println!("HSR proxy, censorship patch, and luau dumper/hooker made by amizing25");
-    println!("GameAssembly: {:X}", base);
+    println!("GameAssembly: {:X}", base.0);
 
     let mut module_manager = MODULE_MANAGER.write().unwrap();
 
     load_dlls();
 
+    if GLOBAL_CONFIG.hook_il2cpp {
+        init_il2cpp_api_wrapper().unwrap();
+        dump_offset_and_rva().unwrap();
+        module_manager.enable(MhyContext::<Il2CppApiBridge>::new(base.0))
+    }
+
     if GLOBAL_CONFIG.enable_redirect {
-        module_manager.enable(MhyContext::<Http>::new(base));
+        module_manager.enable(MhyContext::<Http>::new(base.0));
     }
 
     if GLOBAL_CONFIG.disable_censorship {
-        module_manager.enable(MhyContext::<DisableCensorship>::new(base));
+        module_manager.enable(MhyContext::<DisableCensorship>::new(base.0));
     }
 
     if GLOBAL_CONFIG.enable_luauc_inject || GLOBAL_CONFIG.enable_luauc_dump {
-        module_manager.enable(MhyContext::<XLuaU>::new(base));
+        module_manager.enable(MhyContext::<XLuaU>::new(base.0));
     }
 
-    // module_manager.enable(MhyContext::<Il2Cpp>::new(base));
+    // module_manager.enable(MhyContext::<Il2Cpp>::new(base.0));
 
     println!("Successfully initialized!");
 }

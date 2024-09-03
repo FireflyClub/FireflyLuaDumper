@@ -8,16 +8,42 @@ use windows::Win32::System::LibraryLoader::{GetModuleHandleW, GetProcAddress};
 use windows::Win32::System::Memory::{
     VirtualProtect, PAGE_EXECUTE_READWRITE, PAGE_PROTECTION_FLAGS,
 };
+use windows::Win32::System::ProcessStatus::{GetModuleInformation, MODULEINFO};
+use windows::Win32::System::Threading::GetCurrentProcess;
+
+pub unsafe fn read_csharp_string(addr: u64) -> String {
+    let str_length = *(addr.wrapping_add(16) as *const u32);
+    let str_ptr = addr.wrapping_add(20) as *const u8;
+    let slice = std::slice::from_raw_parts(str_ptr as *const u8, (str_length * 2) as usize);
+    String::from_utf16le(slice).unwrap()
+}
 
 pub fn wide_str(value: &str) -> Vec<u16> {
     OsStr::new(value).encode_wide().chain(once(0)).collect()
 }
 
-pub unsafe fn try_get_base_address(module_name: &str) -> Option<usize> {
+/// returns (module_base_ptr, module_size)
+pub unsafe fn try_get_base_address(module_name: &str) -> Option<(usize, usize)> {
     let w_module_name = wide_str(module_name);
 
     match GetModuleHandleW(PCWSTR::from_raw(w_module_name.as_ptr())) {
-        Ok(module) => Some(module.0 as usize),
+        Ok(module) => {
+            let mut module_info = MODULEINFO {
+                lpBaseOfDll: std::ptr::null_mut(),
+                SizeOfImage: 0,
+                EntryPoint: std::ptr::null_mut(),
+            };
+
+            GetModuleInformation(
+                GetCurrentProcess(),
+                module,
+                &mut module_info,
+                std::mem::size_of::<MODULEINFO>() as u32,
+            )
+            .unwrap();
+
+            Some((module.0 as usize, module_info.SizeOfImage as usize))
+        }
         Err(_) => None,
     }
 }
