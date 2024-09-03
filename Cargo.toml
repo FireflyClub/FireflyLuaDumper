@@ -1,6 +1,6 @@
 [package]
-name = "hkrpg-patch"
-version = "0.1.0"
+name = "FireflySR-Patch"
+version = "1.0.0"
 edition = "2021"
 
 [lib]
@@ -8,27 +8,27 @@ name = "mhypbase"
 crate-type = ["cdylib"]
 
 [dependencies]
-anyhow = "1.0.81"
-ilhook = "2.1.0"
-lazy_static = "1.4.0"
-libloading = "0.8.3"
-windows = { version = "0.54.0", features = [
-	"Win32_Foundation",
-	"Win32_System_SystemServices",
-	"Win32_System_LibraryLoader",
-	"Win32_System_Console",
-	"Win32_System_Threading",
-	"Win32_System_ProcessStatus",
-	"Win32_System_Memory",
+anyhow = "^1.0.81"
+ilhook = "^2.1.0"
+lazy_static = "^1.4.0"
+libloading = "^0.8.3"
+windows = { version = "^0.54.0", features = [
+    "Win32_Foundation",
+    "Win32_System_SystemServices",
+    "Win32_System_LibraryLoader",
+    "Win32_System_Console",
+    "Win32_System_Threading",
+    "Win32_System_ProcessStatus",
+    "Win32_System_Memory",
 ] }
-win_dbg_logger = "0.1.0"
-winapi = { version = "0.3", features = ["winuser","processthreadsapi","libloaderapi"] }
-serde = { version = "1.0.206", features = ["derive"] }
-serde_json = "1.0.114"
+win_dbg_logger = "^0.1.0"
+winapi = { version = "^0.3", features = ["winuser","processthreadsapi","libloaderapi"] }
+serde = { version = "^1.0.206", features = ["derive"] }
+serde_json = "^1.0.114"
 
 [build-dependencies]
-cc = "1.0.90"
-bindgen = "0.69.4"
+cc = "^1.0.90"
+bindgen = "^0.69.4"
 
 [profile.release]
 strip = true      # Automatically strip symbols from the binary.

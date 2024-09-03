@@ -49,7 +49,13 @@ unsafe fn thread_func() {
     util::disable_memprotect_guard();
     Console::AllocConsole().unwrap();
 
-    println!("[Info] hkrpg-patch made by amizing25");
+    println!(r#"
+        _           _      _                 __  _          _    _         
+       /_\   _ __  (_) ___(_) _ _   __ _    / / | |    ___ | |_ | |_   ___ 
+      / _ \ | '  \ | ||_ /| || ' \ / _` |  / /  | |__ / -_)|  _|| ' \ / -_)
+     /_/ \_\|_|_|_||_|/__||_||_||_|\__, | /_/   |____|\___| \__||_||_|\___|
+                                   |___/                                   
+    "#);
     println!("[GameAssembly] GameAssembly: {:X}", base.0);
 
     let mut module_manager = MODULE_MANAGER.write().unwrap();
