@@ -1,0 +1,34 @@
+{
+    "enable_luauc_inject": true,
+    "enable_luauc_dump": true,
+    "luauc_dump_path": "./luauc",
+    "enable_redirect": true,
+    "redirect_url": "http://127.0.0.1:21000",
+    "disable_censorship": true,
+    "offsets": {
+        "CNBETAWin2.4.51": {
+            "web_request_utils_make_initial_url": "0x04403780",
+            "to_string_ansi": "0x0B130570",
+            "set_elevation_dither_alpha_value": "0x048A39E0",
+            "set_distance_dither_alpha_value": "0x048A3CA0",
+            "set_dither_alpha_value": "0x0489B020",
+            "set_dither_alpha_value_with_animation": "0x04899F40"
+        },
+        "CNBETAWin2.4.52": {
+            "web_request_utils_make_initial_url": "0x044C8930",
+            "to_string_ansi": "0x0B197F90",
+            "set_elevation_dither_alpha_value": "0x04A88C00",
+            "set_distance_dither_alpha_value": "0x04A88EC0",
+            "set_dither_alpha_value": "0x04A80230",
+            "set_dither_alpha_value_with_animation": "0x04A7F150"
+        },
+        "CNBETAWin2.4.53": {
+            "web_request_utils_make_initial_url": "0x04491C00",
+            "to_string_ansi": "0x0B20C4E0",
+            "set_elevation_dither_alpha_value": "0x04A92310",
+            "set_distance_dither_alpha_value": "0x04A925D0",
+            "set_dither_alpha_value": "0x04A89940",
+            "set_dither_alpha_value_with_animation": "0x04A88860"
+        }
+    }
+}
