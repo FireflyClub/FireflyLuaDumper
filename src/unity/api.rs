@@ -113,16 +113,6 @@ impl Il2CppApiWrapper {
         Ok(Self::to_string(function(class)))
     }
 
-    pub fn class_get_namespace(&self, class: *const c_void) -> Result<String> {
-        let function = &self
-            .functions
-            .clone()
-            .il2cpp_class_get_namespace
-            .ok_or(anyhow::format_err!("il2cpp_class_get_namespace"))?;
-
-        Ok(Self::to_string(function(class)))
-    }
-
     pub fn method_get_name(&self, method: *const MethodInfo) -> Result<String> {
         let function = &self
             .functions
@@ -191,9 +181,9 @@ pub fn init_il2cpp_api_wrapper() -> Result<&'static Il2CppApiWrapper, Box<dyn Er
         
         if API.is_none() {
             API = Some(Il2CppApiWrapper::new()?);
-            println!("Il2Cpp Api Inited!");
+            println!("[Il2CppApiWrapper] Il2Cpp Api Inited!");
         }
 
-        Ok(API.as_ref().ok_or("Failed to get the il2cpp api")?)
+        Ok(API.as_ref().ok_or("[Il2CppApiWrapper] Failed to get the il2cpp api")?)
     }
 }

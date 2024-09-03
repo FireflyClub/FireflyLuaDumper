@@ -1,44 +1,40 @@
 #![feature(str_from_utf16_endian, let_chains)]
 
-use config::Config;
-use dll_sideload::load_dlls;
-use lazy_static::lazy_static;
-use modules::{DisableCensorship, Http, Il2CppApiBridge, ModuleManager, XLuaU};
-use std::{sync::RwLock, thread, time::Duration};
-use unity::api::init_il2cpp_api_wrapper;
-use unity::rva_dumper::dump_offset_and_rva;
-
-use util::try_get_base_address;
 use win_dbg_logger::output_debug_string;
 use winapi::um::processthreadsapi::{GetCurrentThread, TerminateThread};
 use windows::Win32::Foundation::HINSTANCE;
 use windows::Win32::System::Console;
 use windows::Win32::System::SystemServices::DLL_PROCESS_ATTACH;
+use lazy_static::lazy_static;
+use std::{sync::RwLock, thread, time::Duration};
+
+use config::Config;
+use luau::XLuaU;
+use modules::{DisableCensorship, Http, Il2CppApiBridge, DllSideload};
+use manager::{MhyContext, ModuleManager};
+use unity::api::init_il2cpp_api_wrapper;
+use unity::rva_dumper::dump_offset_and_rva;
+use util::try_get_base_address;
 
 mod config;
-mod dll_sideload;
-// mod il2cpp_api;
 mod interceptor;
 mod marshal;
+mod luau;
 mod modules;
 mod unity;
 mod util;
-mod xluau;
-
-use crate::modules::MhyContext;
+mod manager;
 
 #[no_mangle]
 #[allow(non_snake_case, unused_variables)]
-unsafe extern "cdecl" fn Initialize() -> bool {
-    unsafe {
-        output_debug_string("[AntiCheatEMU] Initialize");
-        thread::sleep(std::time::Duration::from_secs(2));
-        output_debug_string("[AntiCheatEMU] TerminateThread");
-        let thread = GetCurrentThread();
-        TerminateThread(thread, 0);
-        output_debug_string("[AntiCheatEMU] TerminateThread failed");
-        false
-    }
+extern "cdecl" fn Initialize() -> bool {
+    output_debug_string("[AntiCheatEMU] Initialize");
+    thread::sleep(Duration::from_secs(2));
+    output_debug_string("[AntiCheatEMU] TerminateThread");
+    let thread = unsafe { GetCurrentThread() };
+    unsafe { TerminateThread(thread, 0) };
+    output_debug_string("[AntiCheatEMU] TerminateThread failed");
+    false
 }
 
 unsafe fn thread_func() {
@@ -46,19 +42,18 @@ unsafe fn thread_func() {
         if let Some(base) = try_get_base_address("GameAssembly.dll") {
             break base;
         }
-
-        std::thread::sleep(Duration::from_millis(500));
+        thread::sleep(Duration::from_millis(500));
     };
 
     util::disable_memprotect_guard();
     Console::AllocConsole().unwrap();
 
-    println!("HSR proxy, censorship patch, and luau dumper/hooker made by amizing25");
-    println!("GameAssembly: {:X}", base.0);
+    println!("[Info] hkrpg-patch made by amizing25");
+    println!("[GameAssembly] GameAssembly: {:X}", base.0);
 
     let mut module_manager = MODULE_MANAGER.write().unwrap();
 
-    load_dlls();
+    module_manager.enable(MhyContext::<DllSideload>::new(base.0));
 
     if GLOBAL_CONFIG.hook_il2cpp {
         init_il2cpp_api_wrapper().unwrap();
@@ -78,21 +73,34 @@ unsafe fn thread_func() {
         module_manager.enable(MhyContext::<XLuaU>::new(base.0));
     }
 
-    // module_manager.enable(MhyContext::<Il2Cpp>::new(base.0));
-
-    println!("Successfully initialized!");
+    println!("[Info] Successfully initialized!");
 }
 
 lazy_static! {
     static ref MODULE_MANAGER: RwLock<ModuleManager> = RwLock::new(ModuleManager::default());
-    static ref GLOBAL_CONFIG: Config = Config::new().unwrap();
+    static ref GLOBAL_CONFIG: Config = load_config();
+}
+
+fn load_config() -> Config {
+    match Config::new() {
+        Ok(config) => config,
+        Err(_) => {
+            match serde_json::from_str(config::DEFAULT_CONFIG) {
+                Ok(default_config) => {
+                    default_config
+                }
+                Err(_) => {
+                    Config::default()
+                }
+            }
+        }
+    }
 }
 
 #[no_mangle]
 unsafe extern "system" fn DllMain(_: HINSTANCE, call_reason: u32, _: *mut ()) -> bool {
     if call_reason == DLL_PROCESS_ATTACH {
-        std::thread::spawn(|| thread_func());
+        thread::spawn(|| thread_func());
     }
-
     true
 }

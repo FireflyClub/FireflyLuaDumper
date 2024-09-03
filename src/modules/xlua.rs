@@ -1,5 +1,6 @@
 use super::{MhyContext, MhyModule, ModuleType};
-use crate::{util::wide_str, xluau::luau_compile, GLOBAL_CONFIG};
+use super::luau_compile::compile;
+use crate::{util::wide_str, GLOBAL_CONFIG};
 use ilhook::x64::Registers;
 use std::{
     ffi::CStr,
@@ -72,13 +73,13 @@ unsafe extern "win64" fn luau_load_replacement(
 
     let chunkname = CStr::from_ptr(chunkname_ptr);
 
-    println!(
-        "lua_state_ptr: {:#?} | chunkname: {:#?} | data_ptr: {:#?} | size: {:#?} | env: {:#?}",
-        lua_state_ptr, chunkname, data_ptr, size, env
-    );
-
     // dump the scripts
     if GLOBAL_CONFIG.enable_luauc_dump {
+        println!(
+            "lua_state_ptr: {:#?} | chunkname: {:#?} | data_ptr: {:#?} | size: {:#?} | env: {:#?}",
+            lua_state_ptr, chunkname, data_ptr, size, env
+        );
+
         let buffer: &[u8] = std::slice::from_raw_parts(data_ptr as *const u8, size);
         let full_path = format!(
             "{}\\{}",
@@ -110,7 +111,7 @@ unsafe extern "win64" fn luau_load_replacement(
             return luau_load(lua_state_ptr, chunkname_ptr, data_ptr, size, env) as usize;
         };
 
-        let replacement = luau_compile(file);
+        let replacement = compile(file);
         let length = replacement.len();
 
         let ptr = VirtualAlloc(

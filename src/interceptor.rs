@@ -1,4 +1,4 @@
-use anyhow::{bail, Result};
+use anyhow::Result;
 use ilhook::x64::{
     CallbackOption, HookFlags, HookPoint, HookType, Hooker, JmpBackRoutine, RetnRoutine,
 };
@@ -21,9 +21,7 @@ impl Interceptor {
             HookFlags::empty(),
         );
 
-        let Ok(hook_point) = hooker.hook() else {
-            bail!("Failed to attach 0x{addr:X}")
-        };
+        let hook_point = hooker.hook().map_err(|_| anyhow::anyhow!("Failed to attach 0x{addr:X}"))?;
 
         self.hooks.push(hook_point);
         Ok(())
@@ -38,9 +36,7 @@ impl Interceptor {
             HookFlags::empty(),
         );
 
-        let Ok(hook_point) = hooker.hook() else {
-            bail!("Failed to replace 0x{addr:X}")
-        };
+        let hook_point = hooker.hook().map_err(|_| anyhow::anyhow!("Failed to replace 0x{addr:X}"))?;
 
         self.hooks.push(hook_point);
         Ok(())

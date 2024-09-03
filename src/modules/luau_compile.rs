@@ -11,7 +11,7 @@ type LuauCompile = unsafe extern "fastcall" fn(
     outsize: *mut usize,
 ) -> *const std::ffi::c_char;
 
-pub unsafe fn luau_compile(script: String) -> &'static [u8] {
+pub unsafe fn compile(script: String) -> &'static [u8] {
     let luau_compile = std::mem::transmute::<usize, LuauCompile>(xluau_base() + LUAU_COMPILE);
     let mut bytecode_size = 0;
     let bytecode = luau_compile(

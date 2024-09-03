@@ -13,7 +13,7 @@ pub(super) unsafe fn init_dumper_map() {
     METHOD_RVA_CACHE = Some(HashMap::new());
     FIELD_OFFSET_CACHE = Some(HashMap::new());
 
-    println!("Cache inited")
+    println!("[RVADumper] Cache inited")
 }
 
 fn verify_pointer(game_assembly_base: usize, game_assembly_size: usize, pointer: usize) -> bool {
@@ -99,20 +99,11 @@ pub unsafe fn dump_offset_and_rva() -> anyhow::Result<()> {
         }
     }
 
-    let method_cnt = if let Some(ref mut map) = METHOD_RVA_CACHE {
-        (*map).len()
-    } else {
-        0
-    };
-
-    let offset_cnt = if let Some(ref mut map) = FIELD_OFFSET_CACHE {
-        (*map).len()
-    } else {
-        0
-    };
+    let method_cnt = METHOD_RVA_CACHE.as_ref().map_or(0, |map| map.len());
+    let offset_cnt = FIELD_OFFSET_CACHE.as_ref().map_or(0, |map| map.len());
 
     println!(
-        "rva and offset saved into memory! MethodCount: {}, FieldCount: {}",
+        "[RVADumper] rva and offset saved into memory! MethodCount: {}, FieldCount: {}",
         method_cnt, offset_cnt
     );
     Ok(())
