@@ -13,11 +13,11 @@ use windows::Win32::System::Console;
 use windows::Win32::System::SystemServices::DLL_PROCESS_ATTACH;
 
 mod config;
-mod default;
 mod interceptor;
 mod marshal;
 mod modules;
 mod util;
+mod xluau;
 
 use crate::modules::MhyContext;
 

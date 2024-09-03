@@ -11,4 +11,4 @@ Code references:
 
 Note:
 
-- Put mhypbase.dll, config.json and script.luauc (for script injection if any) in the same folder as the game's executable.
+- Put mhypbase.dll, config.json and script.lua (for script injection if any) in the same folder as the game's executable.

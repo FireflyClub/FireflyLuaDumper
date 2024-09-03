@@ -1,5 +1,5 @@
 use super::{MhyContext, MhyModule, ModuleType};
-use crate::{util::wide_str, GLOBAL_CONFIG};
+use crate::{util::wide_str, xluau::luau_compile, GLOBAL_CONFIG};
 use ilhook::x64::Registers;
 use std::{
     ffi::CStr,
@@ -105,13 +105,13 @@ unsafe extern "win64" fn luau_load_replacement(
     if GLOBAL_CONFIG.enable_luauc_inject
         && chunkname.to_str().unwrap() == "@BakedLua/Ui/GameStartup/LoginAgeHintBinder.bytes"
     {
-        let Ok(file) = fs::read("script.luauc") else {
-            println!("[XLuaU] luauc is enabled but no script was found. skipping script injection.");
+        let Ok(file) = fs::read_to_string("script.lua") else {
+            println!("[XLuaU] luauc is enabled but no lua script was found. skipping script injection.");
             // TODO: Refactor
             return luau_load(lua_state_ptr, chunkname_ptr, data_ptr, size, env) as usize;
         };
 
-        let replacement = file.as_slice();
+        let replacement = luau_compile(file);
         let length = replacement.len();
 
         let ptr = VirtualAlloc(
