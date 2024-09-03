@@ -1,12 +1,12 @@
 {
-    "enable_luauc_inject": false,
-    "luauc_inject_path": "./DumpProto.lua",
-    "enable_luauc_dump": false,
-    "luauc_dump_path": "./luauc",
     "enable_redirect": true,
     "redirect_url": "http://127.0.0.1:21000",
     "disable_censorship": true,
+    "enable_luauc_inject": false,
+    "luauc_inject_path": "",
     "hook_il2cpp": false,
+    "enable_luauc_dump": false,
+    "luauc_dump_path": "./luauc",
     "dll_sideloads": [],
     "offsets": {
         "CNBETAWin2.4.51": {
@@ -15,7 +15,20 @@
             "set_elevation_dither_alpha_value": "0x048A39E0",
             "set_distance_dither_alpha_value": "0x048A3CA0",
             "set_dither_alpha_value": "0x0489B020",
-            "set_dither_alpha_value_with_animation": "0x04899F40"
+            "set_dither_alpha_value_with_animation": "0x04899F40",
+            "mhy_sdk_sdkutil_rsaencrypt": "",
+            "il2cpp_domain_get": "",
+            "il2cpp_domain_get_assemblies": "",
+            "il2cpp_assembly_get_image": "",
+            "il2cpp_image_get_class_count": "",
+            "il2cpp_image_get_class": "",
+            "il2cpp_class_get_methods": "",
+            "il2cpp_class_get_name": "",
+            "il2cpp_method_get_name": "",
+            "il2cpp_image_get_name": "",
+            "il2cpp_field_get_name": "",
+            "il2cpp_field_get_offset": "",
+            "il2cpp_class_get_fields": ""
         },
         "CNBETAWin2.4.52": {
             "web_request_utils_make_initial_url": "0x044C8930",
@@ -23,7 +36,20 @@
             "set_elevation_dither_alpha_value": "0x04A88C00",
             "set_distance_dither_alpha_value": "0x04A88EC0",
             "set_dither_alpha_value": "0x04A80230",
-            "set_dither_alpha_value_with_animation": "0x04A7F150"
+            "set_dither_alpha_value_with_animation": "0x04A7F150",
+            "mhy_sdk_sdkutil_rsaencrypt": "",
+            "il2cpp_domain_get": "",
+            "il2cpp_domain_get_assemblies": "",
+            "il2cpp_assembly_get_image": "",
+            "il2cpp_image_get_class_count": "",
+            "il2cpp_image_get_class": "",
+            "il2cpp_class_get_methods": "",
+            "il2cpp_class_get_name": "",
+            "il2cpp_method_get_name": "",
+            "il2cpp_image_get_name": "",
+            "il2cpp_field_get_name": "",
+            "il2cpp_field_get_offset": "",
+            "il2cpp_class_get_fields": ""
         },
         "CNBETAWin2.4.53": {
             "web_request_utils_make_initial_url": "0x04491C00",
@@ -31,7 +57,20 @@
             "set_elevation_dither_alpha_value": "0x04A92310",
             "set_distance_dither_alpha_value": "0x04A925D0",
             "set_dither_alpha_value": "0x04A89940",
-            "set_dither_alpha_value_with_animation": "0x04A88860"
+            "set_dither_alpha_value_with_animation": "0x04A88860",
+            "mhy_sdk_sdkutil_rsaencrypt": "",
+            "il2cpp_domain_get": "",
+            "il2cpp_domain_get_assemblies": "",
+            "il2cpp_assembly_get_image": "",
+            "il2cpp_image_get_class_count": "",
+            "il2cpp_image_get_class": "",
+            "il2cpp_class_get_methods": "",
+            "il2cpp_class_get_name": "",
+            "il2cpp_method_get_name": "",
+            "il2cpp_image_get_name": "",
+            "il2cpp_field_get_name": "",
+            "il2cpp_field_get_offset": "",
+            "il2cpp_class_get_fields": ""
         },
         "CNBETAWin2.4.54": {
             "web_request_utils_make_initial_url": "0x4484A20",
@@ -39,7 +78,20 @@
             "set_elevation_dither_alpha_value": "0x4A449E0",
             "set_distance_dither_alpha_value": "0x4A44CA0",
             "set_dither_alpha_value": "0x4A3C020",
-            "set_dither_alpha_value_with_animation": "0x4A3AF40"
+            "set_dither_alpha_value_with_animation": "0x4A3AF40",
+            "mhy_sdk_sdkutil_rsaencrypt": "",
+            "il2cpp_domain_get": "",
+            "il2cpp_domain_get_assemblies": "",
+            "il2cpp_assembly_get_image": "",
+            "il2cpp_image_get_class_count": "",
+            "il2cpp_image_get_class": "",
+            "il2cpp_class_get_methods": "",
+            "il2cpp_class_get_name": "",
+            "il2cpp_method_get_name": "",
+            "il2cpp_image_get_name": "",
+            "il2cpp_field_get_name": "",
+            "il2cpp_field_get_offset": "",
+            "il2cpp_class_get_fields": ""
         },
         "CNBETAWin2.4.55": {
             "web_request_utils_make_initial_url": "0x96C6D10",
@@ -48,7 +100,19 @@
             "set_distance_dither_alpha_value": "0x9B7A1F0",
             "set_dither_alpha_value": "0x9B71560",
             "set_dither_alpha_value_with_animation": "0x9B70480",
-            "mhy_sdk_sdkutil_rsaencrypt": "0x8A6B7F0"
+            "mhy_sdk_sdkutil_rsaencrypt": "0x8A6B7F0",
+            "il2cpp_domain_get": "0x1D7B610",
+            "il2cpp_domain_get_assemblies": "0x1D7B620",
+            "il2cpp_assembly_get_image": "0x1D7B4C8",
+            "il2cpp_image_get_class_count": "0x1D7B950",
+            "il2cpp_image_get_class": "0x1D7B958",
+            "il2cpp_class_get_methods": "0x1D7B530",
+            "il2cpp_class_get_name": "0x1D7B540",
+            "il2cpp_method_get_name": "0x1D7B7B0",
+            "il2cpp_image_get_name": "0x1D7B948",
+            "il2cpp_field_get_name": "0x1D7B660",
+            "il2cpp_field_get_offset": "0x1D59E30",
+            "il2cpp_class_get_fields": "0x1D7B510"
         }
     }
 }
