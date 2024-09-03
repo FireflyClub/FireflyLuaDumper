@@ -1,10 +1,12 @@
 {
-    "enable_luauc_inject": true,
-    "enable_luauc_dump": true,
+    "enable_luauc_inject": false,
+    "luauc_inject_path": "./DumpProto.lua",
+    "enable_luauc_dump": false,
     "luauc_dump_path": "./luauc",
     "enable_redirect": true,
     "redirect_url": "http://127.0.0.1:21000",
     "disable_censorship": true,
+    "dll_sideloads": [],
     "offsets": {
         "CNBETAWin2.4.51": {
             "web_request_utils_make_initial_url": "0x04403780",
@@ -29,6 +31,22 @@
             "set_distance_dither_alpha_value": "0x04A925D0",
             "set_dither_alpha_value": "0x04A89940",
             "set_dither_alpha_value_with_animation": "0x04A88860"
+        },
+        "CNBETAWin2.4.54": {
+            "web_request_utils_make_initial_url": "0x4484A20",
+            "to_string_ansi": "0xB217F70",
+            "set_elevation_dither_alpha_value": "0x4A449E0",
+            "set_distance_dither_alpha_value": "0x4A44CA0",
+            "set_dither_alpha_value": "0x4A3C020",
+            "set_dither_alpha_value_with_animation": "0x4A3AF40"
+        },
+        "CNBETAWin2.4.55": {
+            "web_request_utils_make_initial_url": "0x96C6D10",
+            "to_string_ansi": "0x8947010",
+            "set_elevation_dither_alpha_value": "0x9B79F30",
+            "set_distance_dither_alpha_value": "0x9B7A1F0",
+            "set_dither_alpha_value": "0x9B71560",
+            "set_dither_alpha_value_with_animation": "0x9B70480"
         }
     }
 }

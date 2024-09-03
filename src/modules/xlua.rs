@@ -105,9 +105,8 @@ unsafe extern "win64" fn luau_load_replacement(
     if GLOBAL_CONFIG.enable_luauc_inject
         && chunkname.to_str().unwrap() == "@BakedLua/Ui/GameStartup/LoginAgeHintBinder.bytes"
     {
-        let Ok(file) = fs::read_to_string("script.lua") else {
+        let Ok(file) = fs::read_to_string(GLOBAL_CONFIG.luauc_inject_path.clone()) else {
             println!("[XLuaU] luauc is enabled but no lua script was found. skipping script injection.");
-            // TODO: Refactor
             return luau_load(lua_state_ptr, chunkname_ptr, data_ptr, size, env) as usize;
         };
 

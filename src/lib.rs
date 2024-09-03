@@ -1,6 +1,7 @@
 #![feature(str_from_utf16_endian)]
 
 use config::Config;
+use dll_sideload::load_dlls;
 use lazy_static::lazy_static;
 use modules::{DisableCensorship, Http, ModuleManager, XLuaU};
 use std::{sync::RwLock, thread, time::Duration};
@@ -13,6 +14,8 @@ use windows::Win32::System::Console;
 use windows::Win32::System::SystemServices::DLL_PROCESS_ATTACH;
 
 mod config;
+mod dll_sideload;
+// mod il2cpp_api;
 mod interceptor;
 mod marshal;
 mod modules;
@@ -52,6 +55,8 @@ unsafe fn thread_func() {
 
     let mut module_manager = MODULE_MANAGER.write().unwrap();
 
+    load_dlls();
+
     if GLOBAL_CONFIG.enable_redirect {
         module_manager.enable(MhyContext::<Http>::new(base));
     }
@@ -63,6 +68,8 @@ unsafe fn thread_func() {
     if GLOBAL_CONFIG.enable_luauc_inject || GLOBAL_CONFIG.enable_luauc_dump {
         module_manager.enable(MhyContext::<XLuaU>::new(base));
     }
+
+    // module_manager.enable(MhyContext::<Il2Cpp>::new(base));
 
     println!("Successfully initialized!");
 }

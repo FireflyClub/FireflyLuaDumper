@@ -13,13 +13,16 @@ const DEFAULT_CONFIG: &'static str = include_str!("./config.json");
 pub struct Config {
     #[serde(default)]
     version: String,
+    pub enable_luauc_inject: bool,
+    pub luauc_inject_path: String,
     pub enable_luauc_dump: bool,
     pub luauc_dump_path: String,
-    pub enable_luauc_inject: bool,
     pub enable_redirect: bool,
-    pub disable_censorship: bool,
     pub redirect_url: String,
+    pub disable_censorship: bool,
     pub offsets: HashMap<String, OffsetConfig>,
+    #[serde(default)]
+    pub dll_sideloads: Vec<String>,
 }
 
 #[derive(Deserialize, Default, Debug)]
