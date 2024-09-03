@@ -1,9 +1,13 @@
 use std::collections::HashMap;
+use std::fs::File;
+use std::io::Write;
 
 use anyhow::Result;
 use serde::{Deserialize, Deserializer};
 
 use crate::util::get_game_version;
+
+const DEFAULT_CONFIG: &'static str = include_str!("./config.json");
 
 #[derive(Deserialize, Default, Debug)]
 pub struct Config {
@@ -39,6 +43,11 @@ impl Config {
         println!("[ConfigManager] Initializing config");
         let version = get_game_version()?;
         println!("[ConfigManager] Detected game version {version}");
+
+        if !std::path::Path::new("config.json").exists() {
+            Self::create_default_config_file()?;
+        }
+
         let file = std::fs::read_to_string("config.json")?;
         let mut config = serde_json::from_str::<Self>(&file)?;
         config.version = version.clone();
@@ -50,6 +59,13 @@ impl Config {
         };
 
         Ok(config)
+    }
+
+    fn create_default_config_file() -> Result<()> {
+        let mut file = File::create("config.json")?;
+        file.write_all(DEFAULT_CONFIG.as_bytes())?;
+        println!("[ConfigManager] Created default config.json");
+        Ok(())
     }
 
     pub fn get_offset(&self) -> &OffsetConfig {
