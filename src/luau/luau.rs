@@ -1,5 +1,5 @@
 use ilhook::x64::Registers;
-use std::{ffi::CStr, fs, ptr::self};
+use std::{ffi::CStr, fs, ptr::self, path::Path, borrow::Cow};
 use windows::{
     core::{PCSTR, PCWSTR},
     Win32::System::{
@@ -66,45 +66,70 @@ unsafe extern "win64" fn luau_load_replacement(
 
     // dump the scripts
     if GLOBAL_CONFIG.enable_luauc_dump {
-        println!(
-            "lua_state_ptr: {:#?} | chunkname: {:#?} | data_ptr: {:#?} | size: {:#?} | env: {:#?}",
-            lua_state_ptr, chunkname, data_ptr, size, env
-        );
+        let should_dump = if GLOBAL_CONFIG.only_chunk {
+            chunkname.to_str().unwrap() == "chunk"
+        } else {
+            true
+        };
 
-        let buffer: &[u8] = std::slice::from_raw_parts(data_ptr as *const u8, size);
-        let full_path = format!(
-            "{}\\{}",
-            GLOBAL_CONFIG.luauc_dump_path,
-            chunkname.to_str().unwrap()
-        );
-        let path = std::path::Path::new(&full_path);
+        if should_dump {
+            println!(
+                "[Luau]  lua_state_ptr: {:#?}\n\
+                 \tchunkname: {:#?}\n\
+                 \tdata_ptr: {:#?}\n\
+                 \tsize: {:#?}\n",
+                lua_state_ptr, chunkname, data_ptr, size
+            );
 
-        if let Some(parent_dir) = path.parent() {
-            let _ = fs::create_dir_all(parent_dir.to_str().unwrap());
+            let buffer: &[u8] = std::slice::from_raw_parts(data_ptr as *const u8, size);
+            let full_path = format!(
+                "{}\\{}",
+                GLOBAL_CONFIG.luauc_dump_path,
+                if chunkname.to_str().unwrap().is_empty() { "unnamed" } else { chunkname.to_str().unwrap() }
+            );
+            let path = std::path::Path::new(&full_path);
+
+            if let Some(parent_dir) = path.parent() {
+                let _ = fs::create_dir_all(parent_dir.to_str().unwrap());
+            }
+
+            std::fs::write(
+                format!(
+                    "{}.{}",
+                    path.to_str().unwrap(),
+                    crate::util::cur_timestamp_ms()
+                ),
+                buffer,
+            )
+            .unwrap();
         }
-
-        std::fs::write(
-            format!(
-                "{}.{}",
-                path.to_str().unwrap(),
-                crate::util::cur_timestamp_ms()
-            ),
-            buffer,
-        )
-        .unwrap();
     }
 
+    // inject the script
     if GLOBAL_CONFIG.enable_luauc_inject
         && chunkname.to_str().unwrap() == "@BakedLua/Ui/GameStartup/LoginAgeHintBinder.bytes"
     {
-        let Ok(file) = fs::read_to_string(GLOBAL_CONFIG.luauc_inject_path.clone()) else {
-            println!("[XLuaU] luauc is enabled but no lua script was found. skipping script injection.");
-            return luau_load(lua_state_ptr, chunkname_ptr, data_ptr, size, env) as usize;
+        let inject_path = Path::new(&GLOBAL_CONFIG.luauc_inject_path);
+        let file_name = inject_path
+            .file_stem()
+            .and_then(|os_str| os_str.to_str())
+            .unwrap_or("unknown");
+
+        let replacement: Cow<[u8]> = if inject_path.extension().and_then(|s| s.to_str()) == Some("lua") {
+            let Ok(file) = fs::read_to_string(&inject_path) else {
+                println!("[XLuaU] No Lua script found.");
+                return luau_load(lua_state_ptr, chunkname_ptr, data_ptr, size, env) as usize;
+            };
+            Cow::Owned(compile(file, file_name))
+        } else {
+            let Ok(bytecode) = fs::read(&inject_path) else {
+                println!("[XLuaU] No Luauc bytecode found.");
+                return luau_load(lua_state_ptr, chunkname_ptr, data_ptr, size, env) as usize;
+            };
+            Cow::Owned(bytecode)
         };
 
-        let replacement = compile(file);
         let length = replacement.len();
-
         let ptr = VirtualAlloc(
             Some(ptr::null_mut()),
             length,
@@ -113,9 +138,8 @@ unsafe extern "win64" fn luau_load_replacement(
         ) as *mut u8;
 
         if ptr.is_null() {
-            panic!("Failed to allocate memory");
+            panic!("[XLuaU] Failed to allocate memory.");
         }
-
         ptr.copy_from_nonoverlapping(replacement.as_ptr(), length);
 
         let mut old_protect = PAGE_PROTECTION_FLAGS(0);
@@ -128,7 +152,7 @@ unsafe extern "win64" fn luau_load_replacement(
         .unwrap();
 
         let result = std::slice::from_raw_parts(ptr, length);
-        println!("[XLuaU] Custom scripts injected");
+        println!("[XLuaU] Custom scripts injected.");
 
         return luau_load(
             lua_state_ptr,

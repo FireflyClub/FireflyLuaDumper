@@ -1,11 +1,12 @@
 {
     "enable_redirect": true,
-    "redirect_url": "http://127.0.0.1:21000",
+    "redirect_url": "http://127.0.0.1:619",
     "disable_censorship": true,
     "enable_luauc_inject": false,
     "luauc_inject_path": "",
     "hook_il2cpp": false,
     "enable_luauc_dump": false,
+    "only_chunk": false,
     "luauc_dump_path": "./luauc",
     "dll_sideloads": [],
     "offsets": {

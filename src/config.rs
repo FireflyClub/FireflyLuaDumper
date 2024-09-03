@@ -23,6 +23,8 @@ pub struct Config {
     #[serde(default)]
     pub enable_luauc_inject: bool,
     #[serde(default)]
+    pub only_chunk: bool,
+    #[serde(default)]
     pub luauc_inject_path: String,
     #[serde(default)]
     pub hook_il2cpp: bool,
