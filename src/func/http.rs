@@ -1,9 +1,9 @@
 use std::ffi::CString;
-
-use super::{MhyContext, MhyModule, ModuleType};
-use crate::{marshal, util::read_csharp_string, GLOBAL_CONFIG};
 use anyhow::Result;
 use ilhook::x64::Registers;
+
+use crate::manager::{MhyContext, MhyModule, ModuleType};
+use crate::{marshal, util::read_csharp_string, GLOBAL_CONFIG};
 
 pub struct Http;
 
@@ -23,7 +23,7 @@ impl MhyModule for MhyContext<Http> {
         Ok(())
     }
 
-    fn get_module_type(&self) -> super::ModuleType {
+    fn get_module_type(&self) -> ModuleType {
         ModuleType::Http
     }
 }

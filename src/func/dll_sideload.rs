@@ -2,8 +2,8 @@ use winapi::um::libloaderapi::LoadLibraryW;
 use anyhow::Result;
 use std::ptr;
 
+use crate::manager::{MhyContext, MhyModule, ModuleType};
 use crate::GLOBAL_CONFIG;
-use super::{MhyContext, MhyModule, ModuleType};
 
 pub struct DllSideload;
 
@@ -18,7 +18,7 @@ impl MhyModule for MhyContext<DllSideload> {
         Ok(())
     }
 
-    fn get_module_type(&self) -> super::ModuleType {
+    fn get_module_type(&self) -> ModuleType {
         ModuleType::DllSideload
     }
 }

@@ -1,22 +1,18 @@
 use std::ffi::CString;
-
 use ilhook::x64::Registers;
 
-use crate::{
-    marshal::ptr_to_string_ansi,
-    unity::rva_dumper::{get_offset, get_rva},
-    util::read_csharp_string,
-    GLOBAL_CONFIG,
-};
+use super::rva_dumper::{get_offset, get_rva};
+use crate::GLOBAL_CONFIG;
+use crate::manager::{MhyContext, MhyModule, ModuleType};
+use crate::marshal::ptr_to_string_ansi;
+use crate::util::read_csharp_string;
 
-use super::{MhyContext, MhyModule};
-
-const CLIENT_PUB_KEY: &str = "<RSAKeyValue>\r\n  <Exponent>AQAB</Exponent>\r\n  <Modulus>hEegnKISgDas5VTuRBUlixB+bvmPvXKa3kVO22UEZjPGMUFLmIl3DhH+dsZo7qJn/GfJCUkP1FA0MJ5Bj8PX8IatLJKIJ9dMCNdnAlkXTlMg86QQAhHZN83vP4swj5ILcrGNKl3YAZ49fvzo7nheuTt0/40f0HkHdNa1dUHECBs=</Modulus>\r\n</RSAKeyValue>";
+pub struct Il2CppApiBridge;
 
 pub type MhySdkSdkUtilRSAEncrypt =
     unsafe extern "fastcall" fn(pubkey: *const u8, content: *const u8) -> *const u8;
 
-pub struct Il2CppApiBridge;
+const CLIENT_PUB_KEY: &str = include_str!("../data/key.pem");
 
 impl MhyModule for MhyContext<Il2CppApiBridge> {
     unsafe fn init(&mut self) -> anyhow::Result<()> {
@@ -37,8 +33,8 @@ impl MhyModule for MhyContext<Il2CppApiBridge> {
         Ok(())
     }
 
-    fn get_module_type(&self) -> super::ModuleType {
-        super::ModuleType::Il2CppApiBridge
+    fn get_module_type(&self) -> ModuleType {
+        ModuleType::Il2CppApiBridge
     }
 }
 

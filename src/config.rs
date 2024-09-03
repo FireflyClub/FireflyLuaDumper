@@ -7,7 +7,7 @@ use serde::{Deserialize, Deserializer};
 use crate::util::get_game_version;
 
 pub const CONFIG_PATH: &'static str = "./config.json";
-pub const DEFAULT_CONFIG: &'static str = include_str!("./config.json");
+pub const DEFAULT_CONFIG: &'static str = include_str!("./data/config.json");
 const ENABLE_CONFIG_GEN: bool = true;
 
 #[derive(Deserialize, Default, Debug)]

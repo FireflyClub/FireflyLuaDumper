@@ -1,26 +1,13 @@
 use std::collections::HashMap;
-
 use anyhow::Result;
 
 use crate::interceptor::Interceptor;
 
-mod disable_censorship;
-mod http;
-mod il2cpp_api_bridge;
-mod xlua;
-mod luau_compile;
-mod dll_sideload;
-
-pub use disable_censorship::DisableCensorship;
-pub use http::Http;
-pub use il2cpp_api_bridge::Il2CppApiBridge;
-pub use xlua::XLuaU;
-pub use dll_sideload::DllSideload;
-
 #[derive(Default)]
 pub struct ModuleManager {
-    modules: HashMap<ModuleType, Box<dyn MhyModule>>,
+    func: HashMap<ModuleType, Box<dyn MhyModule>>,
 }
+
 unsafe impl Sync for ModuleManager {}
 unsafe impl Send for ModuleManager {}
 
@@ -28,13 +15,13 @@ impl ModuleManager {
     pub unsafe fn enable(&mut self, module: impl MhyModule + 'static) {
         let mut boxed_module = Box::new(module);
         boxed_module.init().unwrap();
-        self.modules
+        self.func
             .insert(boxed_module.get_module_type(), boxed_module);
     }
 
     #[allow(dead_code)]
     pub unsafe fn disable(&mut self, module_type: ModuleType) {
-        let module = self.modules.remove(&module_type);
+        let module = self.func.remove(&module_type);
         if let Some(mut module) = module {
             module.as_mut().de_init().unwrap();
         }
@@ -45,9 +32,9 @@ impl ModuleManager {
 pub enum ModuleType {
     Http,
     DisableCensorship,
-    XLua,
     Il2CppApiBridge,
     DllSideload,
+    Luau,
 }
 
 pub trait MhyModule {

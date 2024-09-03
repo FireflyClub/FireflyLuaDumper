@@ -1,12 +1,5 @@
-use super::{MhyContext, MhyModule, ModuleType};
-use super::luau_compile::compile;
-use crate::{util::wide_str, GLOBAL_CONFIG};
 use ilhook::x64::Registers;
-use std::{
-    ffi::CStr,
-    fs,
-    ptr::{self},
-};
+use std::{ffi::CStr, fs, ptr::self};
 use windows::{
     core::{PCSTR, PCWSTR},
     Win32::System::{
@@ -18,6 +11,10 @@ use windows::{
     },
 };
 
+use crate::manager::{MhyContext, MhyModule, ModuleType};
+use crate::luau::compile::compile;
+use crate::{util::wide_str, GLOBAL_CONFIG};
+
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -25,12 +22,6 @@ pub struct lua_State {
     _unused: [u8; 0],
 }
 
-//
-///  ```int luau_load(lua_State* L, const char* chunkname, const char* data, size_t size, int env)```
-///
-///
-///  ```__int64 __fastcall luau_load(_QWORD *a1, __int64 a2, unsigned __int8 *a3, int a4, unsigned int a5)```
-///
 pub type LuaULoad = unsafe extern "fastcall" fn(
     *mut lua_State,
     *const ::std::os::raw::c_char,
@@ -53,8 +44,8 @@ impl MhyModule for MhyContext<XLuaU> {
         Ok(())
     }
 
-    fn get_module_type(&self) -> super::ModuleType {
-        ModuleType::XLua
+    fn get_module_type(&self) -> ModuleType {
+        ModuleType::Luau
     }
 }
 

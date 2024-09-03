@@ -1,6 +1,5 @@
 use core::iter::once;
 use std::ffi::{c_void, OsStr};
-
 use std::os::windows::ffi::OsStrExt;
 use std::time::{SystemTime, UNIX_EPOCH};
 use windows::core::{PCSTR, PCWSTR};

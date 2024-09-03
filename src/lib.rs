@@ -10,7 +10,8 @@ use std::{sync::RwLock, thread, time::Duration};
 
 use config::Config;
 use luau::XLuaU;
-use modules::{DisableCensorship, Http, Il2CppApiBridge, DllSideload};
+use func::{DisableCensorship, Http, DllSideload};
+use unity::Il2CppApiBridge;
 use manager::{MhyContext, ModuleManager};
 use unity::api::init_il2cpp_api_wrapper;
 use unity::rva_dumper::dump_offset_and_rva;
@@ -20,7 +21,7 @@ mod config;
 mod interceptor;
 mod marshal;
 mod luau;
-mod modules;
+mod func;
 mod unity;
 mod util;
 mod manager;
@@ -28,12 +29,12 @@ mod manager;
 #[no_mangle]
 #[allow(non_snake_case, unused_variables)]
 extern "cdecl" fn Initialize() -> bool {
-    output_debug_string("[AntiCheatEMU] Initialize");
+    output_debug_string("[Init] Initialize");
     thread::sleep(Duration::from_secs(2));
-    output_debug_string("[AntiCheatEMU] TerminateThread");
+    output_debug_string("[Init] TerminateThread");
     let thread = unsafe { GetCurrentThread() };
     unsafe { TerminateThread(thread, 0) };
-    output_debug_string("[AntiCheatEMU] TerminateThread failed");
+    output_debug_string("[Init] TerminateThread failed");
     false
 }
 
@@ -73,7 +74,7 @@ unsafe fn thread_func() {
         module_manager.enable(MhyContext::<XLuaU>::new(base.0));
     }
 
-    println!("[Info] Successfully initialized!");
+    println!("[Init] Successfully initialized!");
 }
 
 lazy_static! {

@@ -1,12 +1,11 @@
 use std::ptr;
-
-use crate::GLOBAL_CONFIG;
-
-use super::{MhyContext, MhyModule, ModuleType};
 use anyhow::Result;
 use windows::Win32::System::Memory::{
     VirtualProtect, PAGE_EXECUTE_READWRITE, PAGE_PROTECTION_FLAGS,
 };
+
+use crate::manager::{MhyContext, MhyModule, ModuleType};
+use crate::GLOBAL_CONFIG;
 
 pub struct DisableCensorship;
 
@@ -75,7 +74,7 @@ impl MhyModule for MhyContext<DisableCensorship> {
         Ok(())
     }
 
-    fn get_module_type(&self) -> super::ModuleType {
+    fn get_module_type(&self) -> ModuleType {
         ModuleType::DisableCensorship
     }
 }
