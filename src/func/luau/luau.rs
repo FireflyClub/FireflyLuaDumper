@@ -11,9 +11,11 @@ use windows::{
     },
 };
 
+use super::compile::compile;
 use crate::manager::{MhyContext, MhyModule, ModuleType};
-use crate::luau::compile::compile;
 use crate::{util::wide_str, GLOBAL_CONFIG};
+
+pub struct Luau;
 
 #[allow(non_camel_case_types)]
 #[repr(C)]
@@ -30,9 +32,7 @@ pub type LuaULoad = unsafe extern "fastcall" fn(
     ::std::os::raw::c_int,
 ) -> ::std::os::raw::c_int;
 
-pub struct XLuaU;
-
-impl MhyModule for MhyContext<XLuaU> {
+impl MhyModule for MhyContext<Luau> {
     unsafe fn init(&mut self) -> anyhow::Result<()> {
         println!("[XLuaU] XLuaU module enabled.");
 

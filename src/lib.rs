@@ -9,20 +9,17 @@ use lazy_static::lazy_static;
 use std::{sync::RwLock, thread, time::Duration};
 
 use config::Config;
-use luau::XLuaU;
-use func::{DisableCensorship, Http, DllSideload};
-use unity::Il2CppApiBridge;
 use manager::{MhyContext, ModuleManager};
-use unity::api::init_il2cpp_api_wrapper;
-use unity::rva_dumper::dump_offset_and_rva;
 use util::try_get_base_address;
+use func::{DisableCensorship, Http, DllSideload, Il2CppApiBridge};
+use func::luau::Luau;
+use func::unity::api::init_il2cpp_api_wrapper;
+use func::unity::rva_dumper::dump_offset_and_rva;
 
 mod config;
 mod interceptor;
 mod marshal;
-mod luau;
 mod func;
-mod unity;
 mod util;
 mod manager;
 
@@ -77,7 +74,7 @@ unsafe fn thread_func() {
     }
 
     if GLOBAL_CONFIG.enable_luauc_inject || GLOBAL_CONFIG.enable_luauc_dump {
-        module_manager.enable(MhyContext::<XLuaU>::new(base.0));
+        module_manager.enable(MhyContext::<Luau>::new(base.0));
     }
 
     println!("[Init] Successfully initialized!");

@@ -1,7 +1,7 @@
 use std::ffi::CString;
 use ilhook::x64::Registers;
 
-use super::rva_dumper::{get_offset, get_rva};
+use super::unity::rva_dumper::{get_offset, get_rva};
 use crate::GLOBAL_CONFIG;
 use crate::manager::{MhyContext, MhyModule, ModuleType};
 use crate::marshal::ptr_to_string_ansi;
