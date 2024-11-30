@@ -1,13 +1,17 @@
+mod luau;
+
+pub use luau::XLuaU;
+
 use std::collections::HashMap;
+
 use anyhow::Result;
 
 use crate::interceptor::Interceptor;
 
 #[derive(Default)]
 pub struct ModuleManager {
-    func: HashMap<ModuleType, Box<dyn MhyModule>>,
+    modules: HashMap<ModuleType, Box<dyn MhyModule>>,
 }
-
 unsafe impl Sync for ModuleManager {}
 unsafe impl Send for ModuleManager {}
 
@@ -15,13 +19,13 @@ impl ModuleManager {
     pub unsafe fn enable(&mut self, module: impl MhyModule + 'static) {
         let mut boxed_module = Box::new(module);
         boxed_module.init().unwrap();
-        self.func
+        self.modules
             .insert(boxed_module.get_module_type(), boxed_module);
     }
 
     #[allow(dead_code)]
     pub unsafe fn disable(&mut self, module_type: ModuleType) {
-        let module = self.func.remove(&module_type);
+        let module = self.modules.remove(&module_type);
         if let Some(mut module) = module {
             module.as_mut().de_init().unwrap();
         }
@@ -30,11 +34,7 @@ impl ModuleManager {
 
 #[derive(Copy, Clone, Hash, PartialEq, Eq)]
 pub enum ModuleType {
-    Http,
-    DisableCensorship,
-    Il2CppApiBridge,
-    DllSideload,
-    Luau,
+    LuaU,
 }
 
 pub trait MhyModule {

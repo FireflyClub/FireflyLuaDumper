@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{bail, Result};
 use ilhook::x64::{
     CallbackOption, HookFlags, HookPoint, HookType, Hooker, JmpBackRoutine, RetnRoutine,
 };
@@ -12,6 +12,7 @@ impl Interceptor {
         Self { hooks: Vec::new() }
     }
 
+    #[allow(dead_code)]
     pub unsafe fn attach(&mut self, addr: usize, routine: JmpBackRoutine) -> Result<()> {
         let hooker = Hooker::new(
             addr,
@@ -21,7 +22,9 @@ impl Interceptor {
             HookFlags::empty(),
         );
 
-        let hook_point = hooker.hook().map_err(|_| anyhow::anyhow!("Failed to attach 0x{addr:X}"))?;
+        let Ok(hook_point) = hooker.hook() else {
+            bail!("Failed to attach 0x{addr:X}")
+        };
 
         self.hooks.push(hook_point);
         Ok(())
@@ -36,7 +39,9 @@ impl Interceptor {
             HookFlags::empty(),
         );
 
-        let hook_point = hooker.hook().map_err(|_| anyhow::anyhow!("Failed to replace 0x{addr:X}"))?;
+        let Ok(hook_point) = hooker.hook() else {
+            bail!("Failed to replace 0x{addr:X}")
+        };
 
         self.hooks.push(hook_point);
         Ok(())

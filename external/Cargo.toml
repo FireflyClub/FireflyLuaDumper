@@ -1,0 +1,24 @@
+[package]
+name = "External"
+version = "1.0.2"
+edition = "2021"
+
+[lib]
+name = "mhypbase"
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow.workspace = true
+ilhook.workspace = true
+lazy_static.workspace = true
+libloading.workspace = true
+windows.workspace = true
+winapi.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+patternscan.workspace = true
+
+common.workspace = true
+
+[build-dependencies]
+cc.workspace = true
