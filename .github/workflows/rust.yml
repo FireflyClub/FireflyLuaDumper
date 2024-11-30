@@ -1,19 +1,7 @@
-name: Rust
+name: FireflyDumper
 
 on:
   workflow_dispatch: ~
-  push:
-    paths:
-      - "**.rs"
-    branches:
-      - main
-  pull_request:
-    paths:
-      - "**.rs"
-    types:
-      - opened
-      - synchronize
-      - reopened
 
 env:
   CARGO_TERM_COLOR: always
@@ -27,11 +15,14 @@ jobs:
           - nightly
 
     steps:
-    - uses: actions/checkout@v4
-    - run: rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
-    - run: cargo build --release
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Install Rust
+      run: rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
+    - name: Build FireflyDumper
+      run: cd ./FireflyDumper && cargo build --release
     - name: Upload mhypbase.dll
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: mhypbase
-        path: target/release/mhypbase.dll
+        path: FireflyDumper/target/release/mhypbase.dll
